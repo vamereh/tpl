@@ -35,32 +35,32 @@ class Tpl
   
   /**
    * Содержаний блоков.
-   * @var array
+   * @var Array
    */
   private $blocks = array();
   
   /**
    * Содержание добавок к блокам.
-   * @var array
+   * @var Array
    */
   private $content_for_blocks = array();
   
   /**
    * Адрес шаблона, который расширяет данный.
-   * @var string
+   * @var String
    */ 
   private $expand_tpl_name = null;
   
   /**
    * Рендеринг файла шаблона и вывод полученного результата пользователю.
-   * @param string $filename Имя файла шаблона.
-   * @param array $vars Массив переменных передаваемых в шаблон.
+   * @param String $filename Имя файла шаблона.
+   * @param Array $vars Массив переменных передаваемых в шаблон.
    * @example
    *    $vars = array("hello" => "hello", "world" => "world");  <br>
-   *    $tpl = new CTPL(); <br>
-   *    $tpl->Render("/home/sites/test.ru/views/tpl.html.php", $vars); <br>
+   *    $tpl = new Tpl(); <br>
+   *    $tpl->render("/home/sites/test.ru/views/tpl.html.php", $vars); <br>
    */
-  public function Render($filename, $vars=array()){
+  public function render($filename, $vars=array()){
     $render_tpl_content = "";
     $_vars = $vars;
     extract($_vars, EXTR_OVERWRITE);
@@ -73,21 +73,21 @@ class Tpl
       ob_end_clean();
       $filename = $this->expand_tpl_name;
       $this->expand_tpl_name = null;
-      $this->Render($filename, $vars);
+      $this->render($filename, $vars);
     }
   }
   
   /**
    * Рендеринг файла в строку.
-   * @param string $filename Имя файла шаблона.
-   * @param array $vars Массив переменных передаваемых в шаблон.
-   * @return string
+   * @param String $filename Имя файла шаблона.
+   * @param Array $vars Массив переменных передаваемых в шаблон.
+   * @return String
    * @example
    *    $vars = array("hello" => "hello", "world" => "world");  <br>
-   *    $tpl = new CTPL(); <br>
-   *    $rendered_tpl = $tpl->RenderToString("/home/sites/test.ru/views/tpl.html.php", $vars); <br>
+   *    $tpl = new Tpl(); <br>
+   *    $rendered_tpl = $tpl->renderToString("/home/sites/test.ru/views/tpl.html.php", $vars); <br>
    */
-  public function RenderToString($filename, $vars=array()){
+  public function renderToString($filename, $vars=array()){
     $render_tpl_content = "";
     $_vars = $vars;
     extract($_vars, EXTR_OVERWRITE);
@@ -101,22 +101,22 @@ class Tpl
       ob_end_clean();
       $filename = $this->expand_tpl_name;
       $this->expand_tpl_name = null;
-      $render_tpl_content = $this->RenderToString($filename, $vars);
+      $render_tpl_content = $this->renderToString($filename, $vars);
     }
     return $render_tpl_content;
   }
   
   /**
    * Рендеринг строки и вывод полученного результата пользователю.
-   * @param string $string Содержание шаблона ввиде строки.
-   * @param array $vars Массив переменных передаваемых в шаблон.
+   * @param String $string Содержание шаблона ввиде строки.
+   * @param Array $vars Массив переменных передаваемых в шаблон.
    * @example
    *    $vars = array("hello" => "hello", "world" => "world");  <br>
-   *    $tpl = new CTPL(); <br>
-   *    $tpl->RenderFromString("<?= $hello ?> <?= $world ?>", $vars); <br>
+   *    $tpl = new Tpl(); <br>
+   *    $tpl->renderFromString("<?= $hello ?> <?= $world ?>", $vars); <br>
    *    // => hello world <br><br>
    */
-  public function RenderFromString($string, $vars=array()){
+  public function renderFromString($string, $vars=array()){
     $render_tpl_content = "";
     $_vars = $vars;
     extract($_vars, EXTR_OVERWRITE);
@@ -129,23 +129,23 @@ class Tpl
       ob_end_clean();
       $filename = $this->expand_tpl_name;
       $this->expand_tpl_name = null;
-      $this->Render($filename, $vars);
+      $this->render($filename, $vars);
     }
   }
   
   /**
    * Рендеринг из строки в строку.
-   * @param string $string Содержание шаблона ввиде строки.
-   * @param array $vars Массив переменных передаваемых в шаблон.
-   * @return string 
+   * @param String $string Содержание шаблона ввиде строки.
+   * @param Array $vars Массив переменных передаваемых в шаблон.
+   * @return String 
    * @example
    *    $vars = array("hello" => "hello", "world" => "world");  <br>
-   *    $tpl = new CTPL(); <br>
-   *    $rendered_tpl = $tpl->RenderFromString("<?= $hello ?> <?= $world ?>", $vars); <br>
+   *    $tpl = new Tpl(); <br>
+   *    $rendered_tpl = $tpl->renderFromString("<?= $hello ?> <?= $world ?>", $vars); <br>
    *    echo $rendered_tpl; <br>
    *    // => hello world <br><br>
    */
-  public function RenderFromToString($string, $vars=array()){
+  public function renderFromToString($string, $vars=array()){
     $render_tpl_content = "";
     $_vars = $vars;
     extract($_vars, EXTR_OVERWRITE);
@@ -159,37 +159,36 @@ class Tpl
       ob_end_clean();
       $filename = $this->expand_tpl_name;
       $this->expand_tpl_name = null;
-      $render_tpl_content = $this->RenderToString($filename, $vars);
+      $render_tpl_content = $this->renderToString($filename, $vars);
     }
     return $render_tpl_content;
   }
   
   /**
    * Данный метод позволяет указать шаблон, который расширяется данным шаблоном. 
-   * @param string $tplname Адрес шаблона, который расширяет данный шаблон. 
+   * @param String $tplname Адрес шаблона, который расширяет данный шаблон. 
    */
-  public function Expands($tplname){
-    $this->expand_tpl_name = $tplname;
+  public function expands($tpl_name){
+    $this->expand_tpl_name = $tpl_name;
   }
   
   /**
    * Указатель на начало блока, который необходимо переопределить.
-   * @param string $block_name Имя блока.
+   * @param String $block_name Имя блока.
    */
-  public function BeginBlock($block_name){
+  public function beginBlock($block_name){
     ob_start();
   }
   
   /**
    * Указатель на конец блока, который необходимо переопределить.
-   * @param string $block_name Имя блока.
+   * @param String $block_name Имя блока.
    */
-  public function EndBlock($block_name){
+  public function endBlock($block_name){
     if(array_key_exists($block_name, $this->blocks)===true){
       ob_end_clean();
     }
     else{
-      $render_block_content = "";
       $render_block_content = ob_get_contents();
       ob_end_clean();
       $this->blocks[$block_name] = $render_block_content;
@@ -204,17 +203,17 @@ class Tpl
   
   /**
    * Начало добавление содержимого в конец блока.
-   * @param string $block_name Имя блока.
+   * @param String $block_name Имя блока.
    */
-  public function BeginContentFor($block_name){
+  public function beginContentFor($block_name){
     ob_start();
   }
   
   /**
    * Окончание добавление содержимого в конец блока.
-   * @param string $block_name Имя блока.
+   * @param String $block_name Имя блока.
    */
-  public function EndContentFor($block_name){
+  public function endContentFor($block_name){
     $render_block_content = "";
     $render_block_content = ob_get_contents();
     ob_end_clean();
