@@ -27,17 +27,23 @@ THE SOFTWARE.
 
 
 /**
- * Класс рендеринга шаблонов.
+ * Рендеринг шаблонов.
  * @author Кузнецов Алексей
  */
-class CTPL
+class Tpl
 {
   
   /**
-   * Массив блоков.
+   * Содержаний блоков.
    * @var array
    */
   private $blocks = array();
+  
+  /**
+   * Содержание добавок к блокам.
+   * @var array
+   */
+  private $content_for_blocks = array();
   
   /**
    * Адрес шаблона, который расширяет данный.
@@ -170,14 +176,13 @@ class CTPL
    * Указатель на начало блока, который необходимо переопределить.
    * @param string $block_name Имя блока.
    */
-  public function StartBlock($block_name){
+  public function BeginBlock($block_name){
     ob_start();
   }
   
   /**
    * Указатель на конец блока, который необходимо переопределить.
    * @param string $block_name Имя блока.
-   * @example
    */
   public function EndBlock($block_name){
     if(array_key_exists($block_name, $this->blocks)===true){
@@ -189,9 +194,33 @@ class CTPL
       ob_end_clean();
       $this->blocks[$block_name] = $render_block_content;
     }
-    echo $this->blocks[$block_name];
+    if(array_key_exists($block_name, $this->content_for_blocks)===true){
+      echo $this->blocks[$block_name] . $this->content_for_blocks[$block_name];
+    }
+    else{
+      echo $this->blocks[$block_name];
+    }
   }
   
-}//CTPL
+  /**
+   * Начало добавление содержимого в конец блока.
+   * @param string $block_name Имя блока.
+   */
+  public function BeginContentFor($block_name){
+    ob_start();
+  }
+  
+  /**
+   * Окончание добавление содержимого в конец блока.
+   * @param string $block_name Имя блока.
+   */
+  public function EndContentFor($block_name){
+    $render_block_content = "";
+    $render_block_content = ob_get_contents();
+    ob_end_clean();
+    $this->content_for_blocks[$block_name] = $render_block_content . $this->content_for_blocks[$block_name];
+  }
+  
+}//Tpl
 
 ?>
