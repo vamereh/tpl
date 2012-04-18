@@ -37,19 +37,19 @@ class Tpl
    * Содержаний блоков.
    * @var Array
    */
-  private $blocks = array();
+  protected $blocks = array();
   
   /**
    * Содержание добавок к блокам.
    * @var Array
    */
-  private $contentForBlocks = array();
+  protected $contentForBlocks = array();
   
   /**
    * Адрес шаблона, который расширяет данный.
    * @var String
    */ 
-  private $expandFilename = null;
+  protected $expandFilename = null;
   
   /**
    * Рендеринг файла шаблона и вывод полученного результата пользователю.
@@ -70,8 +70,9 @@ class Tpl
     }
     else{
       ob_end_clean();
-      $this->render($this->expandFilename, $vars);
+      $expandFilename = $this->expandFilename;
       $this->expandFilename = null; 
+      $this->render($expandFilename, $vars);
     }
   }
   
@@ -97,8 +98,9 @@ class Tpl
     }
     else{
       ob_end_clean();
-      $renderContent = $this->renderToString($this->expandFilename, $vars);
+      $expandFilename = $this->expandFilename;
       $this->expandFilename = null; 
+      $renderContent = $this->renderToString($expandFilename, $vars);
     }
     return $renderContent;
   }
@@ -123,9 +125,9 @@ class Tpl
     }
     else{
       ob_end_clean();
-      $this->render($this->expandFilename, $vars);
+      $expandFilename = $this->expandFilename;
       $this->expandFilename = null;
-      
+      $this->render(expandFilename, $vars);
     }
   }
   
@@ -153,8 +155,9 @@ class Tpl
     }
     else{
       ob_end_clean();
-      $renderContent = $this->renderToString($this->expandFilename, $vars);
+      $expandFilename = $this->expandFilename;
       $this->expandFilename = null;
+      $renderContent = $this->renderToString($expandFilename, $vars);
     }
     return $renderContent;
   }
