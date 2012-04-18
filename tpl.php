@@ -43,13 +43,13 @@ class Tpl
    * Содержание добавок к блокам.
    * @var Array
    */
-  private $content_for_blocks = array();
+  private $contentForBlocks = array();
   
   /**
    * Адрес шаблона, который расширяет данный.
    * @var String
    */ 
-  private $expand_tpl_name = null;
+  private $expandFilename = null;
   
   /**
    * Рендеринг файла шаблона и вывод полученного результата пользователю.
@@ -61,19 +61,17 @@ class Tpl
    *    $tpl->render("/home/sites/test.ru/views/tpl.html.php", $vars); <br>
    */
   public function render($filename, $vars=array()){
-    $render_tpl_content = "";
     $_vars = $vars;
     extract($_vars, EXTR_OVERWRITE);
     ob_start();
     require($filename);
-    if($this->expand_tpl_name===null){
+    if($this->expandFilename===null){
       ob_end_flush();
     }
     else{
       ob_end_clean();
-      $filename = $this->expand_tpl_name;
-      $this->expand_tpl_name = null;
-      $this->render($filename, $vars);
+      $this->render($this->expandFilename, $vars);
+      $this->expandFilename = null; 
     }
   }
   
@@ -85,25 +83,24 @@ class Tpl
    * @example
    *    $vars = array("hello" => "hello", "world" => "world");  <br>
    *    $tpl = new Tpl(); <br>
-   *    $rendered_tpl = $tpl->renderToString("/home/sites/test.ru/views/tpl.html.php", $vars); <br>
+   *    $renderedTpl = $tpl->renderToString("/home/sites/test.ru/views/tpl.html.php", $vars); <br>
    */
   public function renderToString($filename, $vars=array()){
-    $render_tpl_content = "";
+    $renderContent = "";
     $_vars = $vars;
     extract($_vars, EXTR_OVERWRITE);
     ob_start();
     require($filename);
-    if($this->expand_tpl_name===null){
-      $render_tpl_content = ob_get_contents();
+    if($this->expandFilename===null){
+      $renderContent = ob_get_contents();
       ob_end_clean();
     }
     else{
       ob_end_clean();
-      $filename = $this->expand_tpl_name;
-      $this->expand_tpl_name = null;
-      $render_tpl_content = $this->renderToString($filename, $vars);
+      $renderContent = $this->renderToString($this->expandFilename, $vars);
+      $this->expandFilename = null; 
     }
-    return $render_tpl_content;
+    return $renderContent;
   }
   
   /**
@@ -117,19 +114,18 @@ class Tpl
    *    // => hello world <br><br>
    */
   public function renderFromString($string, $vars=array()){
-    $render_tpl_content = "";
     $_vars = $vars;
     extract($_vars, EXTR_OVERWRITE);
     ob_start();
     eval(" ?>".$string."<?php "); 
-    if($this->expand_tpl_name===null){
+    if($this->expandFilename===null){
       ob_end_flush();
     }
     else{
       ob_end_clean();
-      $filename = $this->expand_tpl_name;
-      $this->expand_tpl_name = null;
-      $this->render($filename, $vars);
+      $this->render($this->expandFilename, $vars);
+      $this->expandFilename = null;
+      
     }
   }
   
@@ -141,83 +137,82 @@ class Tpl
    * @example
    *    $vars = array("hello" => "hello", "world" => "world");  <br>
    *    $tpl = new Tpl(); <br>
-   *    $rendered_tpl = $tpl->renderFromString("<?= $hello ?> <?= $world ?>", $vars); <br>
-   *    echo $rendered_tpl; <br>
+   *    $renderedTpl = $tpl->renderFromString("<?= $hello ?> <?= $world ?>", $vars); <br>
+   *    echo $renderedTpl; <br>
    *    // => hello world <br><br>
    */
   public function renderFromToString($string, $vars=array()){
-    $render_tpl_content = "";
+    $renderContent = "";
     $_vars = $vars;
     extract($_vars, EXTR_OVERWRITE);
     ob_start();
     eval(" ?>".$string."<?php ");    
-    if($this->expand_tpl_name===null){
-      $render_tpl_content = ob_get_contents();
+    if($this->expandFilename===null){
+      $renderContent = ob_get_contents();
       ob_end_clean();
     }
     else{
       ob_end_clean();
-      $filename = $this->expand_tpl_name;
-      $this->expand_tpl_name = null;
-      $render_tpl_content = $this->renderToString($filename, $vars);
+      $renderContent = $this->renderToString($this->expandFilename, $vars);
+      $this->expandFilename = null;
     }
-    return $render_tpl_content;
+    return $renderContent;
   }
   
   /**
    * Данный метод позволяет указать шаблон, который расширяется данным шаблоном. 
-   * @param String $tplname Адрес шаблона, который расширяет данный шаблон. 
+   * @param String $filename Адрес шаблона, который расширяет данный шаблон. 
    */
-  public function expands($tpl_name){
-    $this->expand_tpl_name = $tpl_name;
+  public function expands($filename){
+    $this->expandFilename = $filename;
   }
   
   /**
    * Указатель на начало блока, который необходимо переопределить.
-   * @param String $block_name Имя блока.
+   * @param String $blockName Имя блока.
    */
-  public function beginBlock($block_name){
+  public function beginBlock($blockName){
     ob_start();
   }
   
   /**
    * Указатель на конец блока, который необходимо переопределить.
-   * @param String $block_name Имя блока.
+   * @param String $blockName Имя блока.
    */
-  public function endBlock($block_name){
-    if(array_key_exists($block_name, $this->blocks)===true){
+  public function endBlock($blockName){
+    if(array_key_exists($blockName, $this->blocks)===true){
       ob_end_clean();
     }
     else{
-      $render_block_content = ob_get_contents();
+      $renderBlockContent = ob_get_contents();
       ob_end_clean();
-      $this->blocks[$block_name] = $render_block_content;
+      $this->blocks[$blockName] = $renderBlockContent;
     }
-    if(array_key_exists($block_name, $this->content_for_blocks)===true){
-      echo $this->blocks[$block_name] . $this->content_for_blocks[$block_name];
+    if(array_key_exists($blockName, $this->contentForBlocks)===true){
+      echo $this->blocks[$blockName] . $this->contentForBlocks[$blockName];
     }
     else{
-      echo $this->blocks[$block_name];
+      echo $this->blocks[$blockName];
     }
   }
   
   /**
    * Начало добавление содержимого в конец блока.
-   * @param String $block_name Имя блока.
+   * @param String $blockName Имя блока.
    */
-  public function beginContentFor($block_name){
+  public function beginContentFor($blockName){
     ob_start();
   }
   
   /**
    * Окончание добавление содержимого в конец блока.
-   * @param String $block_name Имя блока.
+   * @param String $blockName Имя блока.
    */
-  public function endContentFor($block_name){
-    $render_block_content = "";
-    $render_block_content = ob_get_contents();
+  public function endContentFor($blockName){
+    $renderBlockContent = "";
+    $renderBlockContent = ob_get_contents();
     ob_end_clean();
-    $this->content_for_blocks[$block_name] = $render_block_content . $this->content_for_blocks[$block_name];
+    $this->contentForBlocks[$blockName] = $renderBlockContent . $this->contentForBlocks[$blockName];
   }
   
 }//Tpl
