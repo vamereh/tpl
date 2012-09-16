@@ -39,7 +39,7 @@ $rendered = $tpl->renderToString('view.php', array('planet' => 'Марс'));
 
 ```php
 include_once("tpl.php");
-$needRender = "<p>Марс - планета солнечной системы.</p>"
+$needRender = "<p>Марс - планета солнечной системы.</p>";
 $tpl = new Tpl();
 $tpl->renderFromString($needRender, array('planet' => 'Марс'));
 ```
@@ -49,7 +49,7 @@ $tpl->renderFromString($needRender, array('planet' => 'Марс'));
 Рендеринг из строки в строку:
 
 ```php
-$needRender = "<p>Марс - планета солнечной системы.</p>"
+$needRender = "<p>Марс - планета солнечной системы.</p>";
 $rendered = $tpl->renderFromToString($needRender, array('planet' => 'Марс'));
 ```
 
