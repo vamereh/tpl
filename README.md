@@ -21,3 +21,37 @@ $tpl->render('view.php', array('planet' => 'Марс'));
 ```html
 <p>Марс - планета солнечной системы.</p>
 ```
+
+API для рендеринга шаблонов
+--------------------
+
+С методом render() вы уже познакомились. Давайте посмотрим какие методы есть еще.
+
+Результаты рендеринга можно получить в переменную ввиде строки:
+
+```php
+include_once("tpl.php");
+$tpl = new Tpl();
+$rendered = $tpl->renderToString('view.php', array('planet' => 'Марс'));
+```
+
+Вместо адреса шаблона для рендеринга можно передать строку:
+
+```php
+include_once("tpl.php");
+$needRender = "<p>Марс - планета солнечной системы.</p>"
+$tpl = new Tpl();
+$tpl->renderFromString($needRender, array('planet' => 'Марс'));
+```
+
+В результате агенту пользователя будет послан html, такой же как и при использовании метода render().
+
+Рендеринг из строки в строку:
+
+```php
+include_once("tpl.php");
+$needRender = "<p>Марс - планета солнечной системы.</p>"
+$tpl = new Tpl();
+$rendered = $tpl->renderFromToString($needRender, array('planet' => 'Марс'));
+```
+
