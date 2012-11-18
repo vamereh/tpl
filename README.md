@@ -122,7 +122,7 @@ API для сегментации шаблонов
 <? $this->EndBlock("content"); ?>
 ```
 
-Отрендерим шаблон mars.html.php
+Отрендерим шаблон mars.html.php:
 ```php
 $tpl = new Tpl();
 $tpl->renderToString("mars.html.php");
