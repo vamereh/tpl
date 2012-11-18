@@ -124,11 +124,10 @@ API для сегментации шаблонов
 Отрендерим шаблон mars.html.php
 ```php
 $tpl = new Tpl();
-$render_tpl =  $tpl->renderToString("mars.html.php");
+$tpl->renderToString("mars.html.php");
 ```
 
 В результате будет сформирован html:
-
 ```html
 <h1>
   Марс
